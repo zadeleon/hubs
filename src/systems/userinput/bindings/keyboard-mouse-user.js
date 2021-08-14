@@ -123,6 +123,11 @@ export const keyboardMouseUserBindings = addSetsToBindings({
       xform: xforms.copy
     },
     {
+      src: { value: paths.device.keyboard.key("y") },
+      dest: { value: paths.actions.pingSound },
+      xform: xforms.rising
+    },
+    {
       src: { value: paths.device.keyboard.key(" ") },
       dest: { value: paths.actions.thaw },
       xform: xforms.falling
