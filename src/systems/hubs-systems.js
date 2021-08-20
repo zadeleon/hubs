@@ -32,6 +32,7 @@ import { InspectYourselfSystem } from "./inspect-yourself-system";
 import { EmojiSystem } from "./emoji-system";
 import { AudioZonesSystem } from "./audio-zones-system";
 import { GainSystem } from "./audio-gain-system";
+import { playCollisionSounds } from "./collision-sound-system";
 
 AFRAME.registerSystem("hubs-systems", {
   init() {
@@ -105,6 +106,7 @@ AFRAME.registerSystem("hubs-systems", {
       this.singleActionButtonSystem.didInteractLeftThisFrame,
       this.singleActionButtonSystem.didInteractRightThisFrame
     );
+    playCollisionSounds(systems.userinput, this.soundEffectsSystem);
     this.soundEffectsSystem.tick();
     this.scenePreviewCameraSystem.tick();
     this.physicsSystem.tick(dt);
