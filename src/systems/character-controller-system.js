@@ -349,7 +349,7 @@ export class CharacterControllerSystem {
       this.avatarPOV.object3D.getWorldPosition(avatarCurrentPosition);
       const avatarNewPosition = new THREE.Vector3();
       avatarNewPosition.setFromMatrixPosition(newPOV);
-      const tryingToMove = characterAcceleration && characterAcceleration[0] !== 0 && characterAcceleration[1] !== 0;
+      const tryingToMove = characterAcceleration && (characterAcceleration[0] !== 0 || characterAcceleration[1] !== 0);
       // if the distance < 0.0001 then use the sfx system to play sound
       const diffDistance = avatarNewPosition.distanceToSquared(avatarCurrentPosition);
 
