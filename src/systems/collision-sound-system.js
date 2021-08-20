@@ -7,6 +7,8 @@ export const playCollisionSounds = (() => {
   let avatarRig;
 
   return function playCollisionSounds(userinput, sfx) {
+    if (!APP.store.state.preferences.shouldPlayCollisionSounds) return;
+
     if (!avatarRig) {
       avatarRig = document.getElementById("avatar-rig").object3D;
     }

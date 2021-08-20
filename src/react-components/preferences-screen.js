@@ -494,6 +494,10 @@ const preferenceLabels = defineMessages({
     id: "preferences-screen.preference.show-audio-debug-panel",
     defaultMessage: "Show Audio Debug Panel"
   },
+  shouldPlayCollisionSounds: {
+    id: "preferences-screen.preference.should-play-collision-sounds",
+    defaultMessage: "Should Play Collision Sounds"
+  },
   enableAudioClipping: {
     id: "preferences-screen.preference.enable-audio-clipping",
     defaultMessage: "Enable Audio Clipping"
@@ -1029,7 +1033,8 @@ class PreferencesScreen extends Component {
             digits: 3,
             defaultNumber: 0.015
           },
-          { key: "showAudioDebugPanel", prefType: PREFERENCE_LIST_ITEM_TYPE.CHECK_BOX, defaultBool: false }
+          { key: "showAudioDebugPanel", prefType: PREFERENCE_LIST_ITEM_TYPE.CHECK_BOX, defaultBool: false },
+          { key: "shouldPlayCollisionSounds", prefType: PREFERENCE_LIST_ITEM_TYPE.CHECK_BOX, defaultBool: false }
         ]
       ],
       [

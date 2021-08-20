@@ -129,6 +129,7 @@ export const SCHEMA = {
         locale: { type: "string" },
         showRtcDebugPanel: { type: "bool" },
         showAudioDebugPanel: { type: "bool" },
+        shouldPlayCollisionSounds: { type: "bool" },
         enableAudioClipping: { type: "bool" },
         audioClippingThreshold: { type: "number" },
         theme: { type: "string" }
