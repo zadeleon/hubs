@@ -33,6 +33,7 @@ import { AudioZonesSystem } from "./audio-zones-system";
 import { GainSystem } from "./audio-gain-system";
 import { EnvironmentSystem } from "./environment-system";
 import { NameTagVisibilitySystem } from "./name-tag-visibility-system";
+import { singleActionButtonSystem } from "./single-action-button-system";
 
 AFRAME.registerSystem("hubs-systems", {
   init() {
@@ -47,7 +48,6 @@ AFRAME.registerSystem("hubs-systems", {
     this.physicsSystem = new PhysicsSystem(this.el.object3D);
     this.constraintsSystem = new ConstraintsSystem(this.physicsSystem);
     this.twoPointStretchingSystem = new TwoPointStretchingSystem();
-    this.singleActionButtonSystem = new SingleActionButtonSystem();
     this.holdableButtonSystem = new HoldableButtonSystem();
     this.hoverButtonSystem = new HoverButtonSystem();
     this.hoverMenuSystem = new HoverMenuSystem();
@@ -81,8 +81,10 @@ AFRAME.registerSystem("hubs-systems", {
 
   tick(t, dt) {
     if (!this.DOMContentDidLoad) return;
+    const world = APP.world;
     const systems = AFRAME.scenes[0].systems;
     systems.userinput.tick2();
+    this.cursorTargettingSystem.tick(t);
     systems.interaction.tick2();
 
     // We run this earlier in the frame so things have a chance to override properties run by animations
@@ -94,19 +96,23 @@ AFRAME.registerSystem("hubs-systems", {
     this.superSpawnerSystem.tick();
     this.emojiSystem.tick(t, systems.userinput);
     this.cursorPoseTrackingSystem.tick();
-    this.cursorTargettingSystem.tick(t);
     this.hoverMenuSystem.tick();
     this.positionAtBorderSystem.tick();
     this.constraintsSystem.tick();
     this.twoPointStretchingSystem.tick();
-    this.singleActionButtonSystem.tick();
+
+    singleActionButtonSystem(world);
+
     this.holdableButtonSystem.tick();
     this.hoverButtonSystem.tick();
     this.drawingMenuSystem.tick();
     this.hapticFeedbackSystem.tick(
       this.twoPointStretchingSystem,
-      this.singleActionButtonSystem.didInteractLeftThisFrame,
-      this.singleActionButtonSystem.didInteractRightThisFrame
+      false,
+      false
+      // TODO: didInteractLeftThisFrame doesn't exist?
+      // this.singleActionButtonSystem.didInteractLeftThisFrame,
+      // this.singleActionButtonSystem.didInteractRightThisFrame
     );
     this.soundEffectsSystem.tick();
     this.scenePreviewCameraSystem.tick();
