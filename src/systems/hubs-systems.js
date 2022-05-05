@@ -33,8 +33,10 @@ import { AudioZonesSystem } from "./audio-zones-system";
 import { GainSystem } from "./audio-gain-system";
 import { EnvironmentSystem } from "./environment-system";
 import { NameTagVisibilitySystem } from "./name-tag-visibility-system";
+
 import { singleActionButtonSystem } from "./single-action-button-system";
 import { removeNetworkedObjectSystem } from "./remove-networked-object-system";
+import { floatyObjectSystem } from "./floaty-object-system";
 
 AFRAME.registerSystem("hubs-systems", {
   init() {
@@ -103,6 +105,7 @@ AFRAME.registerSystem("hubs-systems", {
     this.twoPointStretchingSystem.tick();
 
     singleActionButtonSystem(world);
+    floatyObjectSystem(world);
 
     this.holdableButtonSystem.tick();
     this.hoverButtonSystem.tick();
