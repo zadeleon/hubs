@@ -38,6 +38,7 @@ import { NameTagVisibilitySystem } from "./name-tag-visibility-system";
 import { singleActionButtonSystem } from "./single-action-button-system";
 import { removeNetworkedObjectSystem } from "./remove-networked-object-system";
 import { floatyObjectSystem } from "./floaty-object-system";
+import { networkSendSystem, applyNetworkUpdates } from "./netcode";
 
 AFRAME.registerSystem("hubs-systems", {
   init() {
@@ -86,6 +87,9 @@ AFRAME.registerSystem("hubs-systems", {
   tick(t, dt) {
     if (!this.DOMContentDidLoad) return;
     const world = APP.world;
+
+    applyNetworkUpdates(world);
+
     const systems = AFRAME.scenes[0].systems;
     systems.userinput.tick2();
     this.cursorTargettingSystem.tick(t);
@@ -140,6 +144,8 @@ AFRAME.registerSystem("hubs-systems", {
 
     // We run this late in the frame so that its the last thing to have an opinion about the scale of an object
     this.boneVisibilitySystem.tick();
+
+    networkSendSystem(world);
   },
 
   remove() {
