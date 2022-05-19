@@ -304,6 +304,9 @@ export class WaypointSystem {
     return this.nextMoveToSpawn;
   }
   moveToWaypoint(waypointComponent, instant) {
+    this.characterController.lockToObject(waypointComponent.el.object3D);
+  }
+  xxxmoveToWaypoint(waypointComponent, instant) {
     this.releaseAnyOccupiedWaypoints();
     waypointComponent.el.object3D.updateMatrices();
     this.characterController.shouldLandWhenPossible = true;
