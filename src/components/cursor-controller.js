@@ -1,6 +1,19 @@
+import { addComponent, defineQuery, hasComponent, removeComponent } from "bitecs";
+import { HoveredLeftRemote, HoveredRightRemote, NotRemoteHoverTarget, RemoteHoverTarget } from "../bit-components";
 import { paths } from "../systems/userinput/paths";
 import { sets } from "../systems/userinput/sets";
 import { getLastWorldPosition } from "../utils/three-utils";
+
+export function findRemoteHoverTarget(world, object3D) {
+  if (!object3D) return null;
+  if (!object3D.eid) return findRemoteHoverTarget(world, object3D.parent);
+  if (hasComponent(world, NotRemoteHoverTarget, object3D.eid)) return null;
+  if (hasComponent(world, RemoteHoverTarget, object3D.eid)) return object3D.eid;
+  return findRemoteHoverTarget(world, object3D.parent);
+}
+
+const hoveredLeftRemoteQuery = defineQuery([HoveredLeftRemote]);
+const hoveredRightRemoteQuery = defineQuery([HoveredRightRemote]);
 
 const HIGHLIGHT = new THREE.Color(23 / 255, 64 / 255, 118 / 255);
 const NO_HIGHLIGHT = new THREE.Color(190 / 255, 190 / 255, 190 / 255);
@@ -145,8 +158,18 @@ AFRAME.registerComponent("cursor-controller", {
           rawIntersections
         );
         this.intersection = rawIntersections[0];
-        this.intersectionIsValid = !!interaction.updateCursorIntersection(this.intersection, left);
-        this.distance = this.intersectionIsValid ? this.intersection.distance : this.data.defaultDistance * playerScale;
+        const remoteHoverTarget = findRemoteHoverTarget(this.intersection);
+        if (remoteHoverTarget) {
+          addComponent(APP.world, left ? HoveredLeftRemote : HoveredRightRemote, remoteHoverTarget);
+        }
+        const hovered = left ? hoveredLeftRemoteQuery(APP.world) : hoveredRightRemoteQuery(APP.world);
+        for (let i = 0; i < hovered.length; i++) {
+          // Unhover anything that should no longer be hovered
+          if (remoteHoverTarget !== hovered[i]) {
+            removeComponent(APP.world, left ? HoveredLeftRemote : HoveredRightRemote, hovered[i]);
+          }
+        }
+        this.distance = remoteHoverTarget ? this.intersection.distance : this.data.defaultDistance * playerScale;
       }
 
       const { cursor, minDistance, far, camera } = this.data;
@@ -171,7 +194,7 @@ AFRAME.registerComponent("cursor-controller", {
           (!left && transformObjectSystem.hand.el.id === "player-right-controller"))
       ) {
         this.color.copy(TRANSFORM_COLOR_1).lerpHSL(TRANSFORM_COLOR_2, 0.5 + 0.5 * Math.sin(t / 1000.0));
-      } else if (this.intersectionIsValid || isGrabbing) {
+      } else if (remoteHoverTarget || isGrabbing) {
         this.color.copy(HIGHLIGHT);
       } else {
         this.color.copy(NO_HIGHLIGHT);

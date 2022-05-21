@@ -1,5 +1,6 @@
 import { addComponent } from "bitecs";
 import { FloatyObject } from "../bit-components";
+import { isHeld } from "../is-held";
 /* global AFRAME */
 const COLLISION_LAYERS = require("../constants").COLLISION_LAYERS;
 
@@ -37,17 +38,16 @@ AFRAME.registerComponent("floaty-object", {
       this.bodyHelper = this.el.components["body-helper"];
     }
 
-    const interaction = AFRAME.scenes[0].systems.interaction;
-    const isHeld = interaction && interaction.isHeld(this.el);
+    const thisIsHeld = isHeld(this.el.eid);
 
-    if (isHeld && !this.wasHeld) {
+    if (thisIsHeld && !this.wasHeld) {
       // this.onGrab();
     }
-    if (this.wasHeld && !isHeld) {
+    if (this.wasHeld && !thisIsHeld) {
       // this.onRelease();
     }
 
-    this.wasHeld = isHeld;
+    this.wasHeld = thisIsHeld;
   },
 
   play() {

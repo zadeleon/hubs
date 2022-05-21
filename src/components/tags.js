@@ -12,8 +12,13 @@ import {
   Static,
   Inspectable,
   PreventAudioBoost,
-  IgnoreSpaceBubble
+  IgnoreSpaceBubble,
+  Held,
+  HeldLeftHand,
+  HeldLeftRemote,
+  HeldRightHand
 } from "../bit-components";
+import { isHeld } from "../is-held";
 
 const tag2ecs = {
   isHoldable: Holdable,
@@ -77,9 +82,7 @@ AFRAME.registerComponent("tags", {
   },
 
   remove() {
-    const interaction = this.el.sceneEl.systems.interaction;
-    if (interaction.isHeld(this.el.object3D)) {
-      interaction.release(this.el.object3D);
+    if (isHeld(this.el.eid)) {
       this.el.sceneEl.systems["hubs-systems"].constraintsSystem.release(this.el);
     }
   }

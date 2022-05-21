@@ -5,17 +5,17 @@ import { AnimationMixerSystem } from "../components/animation-mixer";
 import { UVScrollSystem } from "../components/uv-scroll";
 import { CursorTogglingSystem } from "./cursor-toggling-system";
 import { PhysicsSystem } from "./physics-system";
-import { ConstraintsSystem } from "./constraints-system";
-import { TwoPointStretchingSystem } from "./two-point-stretching-system";
-import { SingleActionButtonSystem, HoldableButtonSystem, HoverButtonSystem } from "./button-systems";
+// import { ConstraintsSystem } from "./constraints-system";
+// import { TwoPointStretchingSystem } from "./two-point-stretching-system";
+// import { HoldableButtonSystem, HoverButtonSystem } from "./button-systems";
 import { DrawingMenuSystem } from "./drawing-menu-system";
 import { HoverMenuSystem } from "./hover-menu-system";
 import { SuperSpawnerSystem } from "./super-spawner-system";
-import { HapticFeedbackSystem } from "./haptic-feedback-system";
+// import { HapticFeedbackSystem } from "./haptic-feedback-system";
 import { SoundEffectsSystem } from "./sound-effects-system";
 import { BatchManagerSystem } from "./render-manager-system";
 import { ScenePreviewCameraSystem } from "./scene-preview-camera-system";
-import { InteractionSfxSystem } from "./interaction-sfx-system";
+// import { InteractionSfxSystem } from "./interaction-sfx-system";
 import { SpriteSystem } from "./sprites";
 import { CameraSystem } from "./camera-system";
 import { WaypointSystem } from "./waypoint-system";
@@ -46,17 +46,17 @@ AFRAME.registerSystem("hubs-systems", {
       this.DOMContentDidLoad = true;
     });
     this.cursorTogglingSystem = new CursorTogglingSystem();
-    this.interactionSfxSystem = new InteractionSfxSystem();
+    // this.interactionSfxSystem = new InteractionSfxSystem();
     this.superSpawnerSystem = new SuperSpawnerSystem();
     this.cursorTargettingSystem = new CursorTargettingSystem();
     this.positionAtBorderSystem = new PositionAtBorderSystem();
     this.physicsSystem = new PhysicsSystem(this.el.object3D);
-    this.constraintsSystem = new ConstraintsSystem(this.physicsSystem);
-    this.twoPointStretchingSystem = new TwoPointStretchingSystem();
-    this.holdableButtonSystem = new HoldableButtonSystem();
-    this.hoverButtonSystem = new HoverButtonSystem();
+    // this.constraintsSystem = new ConstraintsSystem(this.physicsSystem);
+    // this.twoPointStretchingSystem = new TwoPointStretchingSystem();
+    // this.holdableButtonSystem = new HoldableButtonSystem();
+    // this.hoverButtonSystem = new HoverButtonSystem();
     this.hoverMenuSystem = new HoverMenuSystem();
-    this.hapticFeedbackSystem = new HapticFeedbackSystem();
+    // this.hapticFeedbackSystem = new HapticFeedbackSystem();
     this.audioSystem = new AudioSystem(this.el);
     this.soundEffectsSystem = new SoundEffectsSystem(this.el);
     this.scenePreviewCameraSystem = new ScenePreviewCameraSystem();
@@ -99,29 +99,30 @@ AFRAME.registerSystem("hubs-systems", {
 
     this.characterController.tick(t, dt);
     this.cursorTogglingSystem.tick(systems.interaction, systems.userinput, this.el);
-    this.interactionSfxSystem.tick(systems.interaction, systems.userinput, this.soundEffectsSystem);
+    // this.interactionSfxSystem.tick(systems.interaction, systems.userinput, this.soundEffectsSystem);
     this.superSpawnerSystem.tick();
     this.emojiSystem.tick(t, systems.userinput);
     this.cursorPoseTrackingSystem.tick();
     this.hoverMenuSystem.tick();
     this.positionAtBorderSystem.tick();
-    this.constraintsSystem.tick();
-    this.twoPointStretchingSystem.tick();
+    // JFS TODO constraints system
+    // this.constraintsSystem.tick();
+    // this.twoPointStretchingSystem.tick();
 
     singleActionButtonSystem(world);
     floatyObjectSystem(world);
 
-    this.holdableButtonSystem.tick();
-    this.hoverButtonSystem.tick();
+    // this.holdableButtonSystem.tick();
+    // this.hoverButtonSystem.tick();
     this.drawingMenuSystem.tick();
-    this.hapticFeedbackSystem.tick(
-      this.twoPointStretchingSystem,
-      false,
-      false
-      // TODO: didInteractLeftThisFrame doesn't exist?
-      // this.singleActionButtonSystem.didInteractLeftThisFrame,
-      // this.singleActionButtonSystem.didInteractRightThisFrame
-    );
+    // this.hapticFeedbackSystem.tick(
+    //   // this.twoPointStretchingSystem,
+    //   false,
+    //   false
+    //   // TODO: didInteractLeftThisFrame doesn't exist?
+    //   // this.singleActionButtonSystem.didInteractLeftThisFrame,
+    //   // this.singleActionButtonSystem.didInteractRightThisFrame
+    // );
     this.soundEffectsSystem.tick();
     this.scenePreviewCameraSystem.tick();
     this.physicsSystem.tick(dt);

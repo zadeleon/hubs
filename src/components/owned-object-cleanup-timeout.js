@@ -1,3 +1,5 @@
+import { isHeld } from "../is-held";
+
 /* global performance */
 AFRAME.registerComponent("owned-object-cleanup-timeout", {
   schema: {
@@ -13,9 +15,7 @@ AFRAME.registerComponent("owned-object-cleanup-timeout", {
       return;
     }
 
-    const isHeld = this.el.sceneEl.systems.interaction.isHeld(this.el);
-
-    if (isHeld) {
+    if (isHeld(this.el.eid)) {
       this.timeout = performance.now() + this.data.ttl * 1000;
       return;
     }

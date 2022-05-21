@@ -1,4 +1,20 @@
+import { anyEntityWith } from "../../utils/bit-utils";
 import { BatchRawUniformGroup } from "@mozillareality/three-batch-manager";
+import { hasComponent } from "bitecs";
+import {
+  LeftHand,
+  RightHand,
+  LeftRemote,
+  RightRemote,
+  HeldLeftHand,
+  HeldLeftRemote,
+  HeldRightHand,
+  HeldRightRemote,
+  HoveredLeftHand,
+  HoveredLeftRemote,
+  HoveredRightHand,
+  HoveredRightRemote
+} from "../../bit-components";
 import { Layers } from "../../components/layers";
 import { CAMERA_MODE_INSPECT } from "../camera-system";
 
@@ -53,8 +69,6 @@ export default class HubsBatchRawUniformGroup extends BatchRawUniformGroup {
   }
 
   update(time) {
-    const interaction = AFRAME.scenes[0].systems.interaction;
-    if (!interaction.ready) return; //DOMContentReady workaround
     const cameraSystem = AFRAME.scenes[0].systems["hubs-systems"].cameraSystem;
     const inspecting = cameraSystem.mode === CAMERA_MODE_INSPECT && !cameraSystem.lightsEnabled;
     let interactorOne, interactorTwo;
@@ -95,19 +109,24 @@ export default class HubsBatchRawUniformGroup extends BatchRawUniformGroup {
           const hideDueToPinning = !isSpawner && isPinned && !isFrozen;
 
           let highlightInteractorOne, highlightInteractorTwo;
-          if (interaction.state.leftRemote.hovered === el && !interaction.state.leftRemote.held) {
-            interactorOne = interaction.options.leftRemote.entity.object3D;
+          const eid = el.eid;
+          if (hasComponent(APP.world, HoveredLeftRemote, eid) && !hasComponent(APP.world, HeldLeftRemote, eid)) {
+            interactorOne =
+              anyEntityWith(APP.world, LeftRemote) && APP.world.eid2obj.get(anyEntityWith(APP.world, LeftRemote));
             highlightInteractorOne = true;
-          } else if (interaction.state.leftHand.hovered === el && !interaction.state.leftHand.held) {
-            interactorOne = interaction.options.leftHand.entity.object3D;
+          } else if (hasComponent(APP.world, HoveredLeftHand, eid) && !hasComponent(APP.world, HeldLeftHand, eid)) {
+            interactorOne =
+              anyEntityWith(APP.world, LeftHand) && APP.world.eid2obj.get(anyEntityWith(APP.world, LeftHand));
             highlightInteractorOne = true;
           }
 
-          if (interaction.state.rightRemote.hovered === el && !interaction.state.rightRemote.held) {
-            interactorTwo = interaction.options.rightRemote.entity.object3D;
+          if (hasComponent(APP.world, HoveredRightRemote, eid) && !hasComponent(APP.world, HeldRightRemote, eid)) {
+            interactorTwo =
+              anyEntityWith(APP.world, RightRemote) && APP.world.eid2obj.get(anyEntityWith(APP.world, RightRemote));
             highlightInteractorTwo = true;
-          } else if (interaction.state.rightHand.hovered === el && !interaction.state.rightHand.held) {
-            interactorTwo = interaction.options.rightHand.entity.object3D;
+          } else if (hasComponent(APP.world, HoveredRightHand, eid) && !hasComponent(APP.world, HeldRightHand, eid)) {
+            interactorTwo =
+              anyEntityWith(APP.world, RightHand) && APP.world.eid2obj.get(anyEntityWith(APP.world, RightHand));
             highlightInteractorTwo = true;
           }
 

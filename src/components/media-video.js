@@ -23,6 +23,9 @@ import { isSafari } from "../utils/detect-safari";
 import { isIOS as detectIOS } from "../utils/is-mobile";
 
 import qsTruthy from "../utils/qs_truthy";
+import { hasComponent } from "bitecs";
+import { HoveredLeftRemote, HoveredRightRemote } from "../bit-components";
+import { isHeld } from "../is-held";
 
 const ONCE_TRUE = { once: true };
 const TYPE_IMG_PNG = { type: "image/png" };
@@ -753,23 +756,22 @@ AFRAME.registerComponent("media-video", {
       if (!this.video) return;
 
       const userinput = this.el.sceneEl.systems.userinput;
-      const interaction = this.el.sceneEl.systems.interaction;
       const volumeModRight = userinput.get(paths.actions.cursor.right.mediaVolumeMod);
-      if (interaction.state.rightRemote.hovered === this.el && volumeModRight) {
+      if (hasComponent(APP.world, HoveredRightRemote, this.el.eid) && volumeModRight) {
         this.changeVolumeBy(volumeModRight);
       }
       const volumeModLeft = userinput.get(paths.actions.cursor.left.mediaVolumeMod);
-      if (interaction.state.leftRemote.hovered === this.el && volumeModLeft) {
+      if (hasComponent(APP.world, HoveredLeftRemote, this.el.eid) && volumeModLeft) {
         this.changeVolumeBy(volumeModLeft);
       }
 
-      const isHeld = interaction.isHeld(this.el);
+      const thisIsHeld = isHeld(this.el.eid);
 
-      if (this.wasHeld && !isHeld) {
+      if (this.wasHeld && !thisIsHeld) {
         this.localSnapCount = 0;
       }
 
-      this.wasHeld = isHeld;
+      this.wasHeld = thisIsHeld;
 
       if (this.hoverMenu && this.hoverMenu.object3D.visible && !this.videoIsLive) {
         this.timeLabel.setAttribute(

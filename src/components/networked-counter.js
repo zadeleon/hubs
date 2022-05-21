@@ -1,4 +1,7 @@
 /* global AFRAME performance */
+
+import { isHeld } from "../is-held";
+
 /**
  * Limits networked interactables to a maximum number at any given time
  * @namespace network
@@ -37,11 +40,10 @@ AFRAME.registerComponent("networked-counter", {
   },
 
   _destroyOldest() {
-    const interaction = this.el.sceneEl.systems.interaction;
     let oldestEl = null,
       minTs = Number.MAX_VALUE;
     this.timestamps.forEach((ts, el) => {
-      if (ts < minTs && !interaction.isHeld(el) && NAF.utils.isMine(el)) {
+      if (ts < minTs && !isHeld(el.eid) && NAF.utils.isMine(el)) {
         oldestEl = el;
         minTs = ts;
       }

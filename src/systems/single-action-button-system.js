@@ -10,6 +10,7 @@ export function singleActionButtonSystem(world) {
   // Clear the interactions from previous frames
   const interactedEnts = interactedQuery(world);
   for (let i = 0; i < interactedEnts.length; i++) {
+    console.log("Clearing interaction");
     const eid = interactedEnts[i];
     removeComponent(world, Interacted, eid);
   }

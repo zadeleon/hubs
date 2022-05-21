@@ -1,4 +1,6 @@
+import { HoveredRightRemote } from "../bit-components";
 import { isTagged } from "../components/tags";
+import { anyEntityWith } from "../utils/bit-utils";
 
 function getSpecificHoverMenu(el) {
   return (
@@ -33,8 +35,9 @@ function findHoverMenu(hovered) {
 
 export class HoverMenuSystem {
   tick() {
-    const interaction = AFRAME.scenes[0].systems.interaction;
-    const hoverMenu = findHoverMenu(interaction.state.rightRemote.hovered);
+    const eid = anyEntityWith(APP.world, HoveredRightRemote);
+    const el = eid && APP.world.eid2obj.get(eid).el;
+    const hoverMenu = el && findHoverMenu(el);
 
     if (this.prevHoverMenu && this.prevHoverMenu !== hoverMenu) {
       this.prevHoverMenu.hovering = false;
@@ -49,7 +52,9 @@ export class HoverMenuSystem {
     this.prevHoverMenu = hoverMenu;
 
     //TODO: Menu be visible if either remote is hovering.
-    const hoverMenu2 = findHoverMenu(interaction.state.leftRemote.hovered);
+    const eid2 = anyEntityWith(APP.world, HoveredRightRemote);
+    const el2 = eid2 && APP.world.eid2obj.get(eid2).el;
+    const hoverMenu2 = el2 && findHoverMenu(el2);
 
     if (this.prevHoverMenu2 && this.prevHoverMenu2 !== hoverMenu2) {
       this.prevHoverMenu2.hovering = false;

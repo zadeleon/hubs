@@ -1,5 +1,7 @@
 import { SOUND_QUACK, SOUND_SPECIAL_QUACK } from "../systems/sound-effects-system";
 
+import { isHeld } from "../is-held";
+
 AFRAME.registerComponent("quack", {
   schema: {
     quackPercentage: { default: 1 },
@@ -14,8 +16,7 @@ AFRAME.registerComponent("quack", {
   },
 
   tick: function() {
-    const interaction = AFRAME.scenes[0].systems.interaction;
-    const isInteracting = interaction.isHeld(this.networkedEntity || this.el);
+    const isInteracting = isHeld(this.networkedEntity.eid || this.el.eid);
 
     if (isInteracting && !this.wasInteracting) {
       this.quack();

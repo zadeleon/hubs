@@ -18,7 +18,8 @@ import {
   HeldRightRemote,
   HeldLeftRemote,
   HeldRightHand,
-  HeldLeftHand
+  HeldLeftHand,
+  NotRemoteHoverTarget
 } from "../bit-components";
 
 function findHandCollisionTargetForHand(bodyId) {
@@ -38,112 +39,16 @@ function findHandCollisionTargetForHand(bodyId) {
   return null;
 }
 
-const notRemoteHoverTargets = new Map();
-export function findRemoteHoverTarget(object3D) {
-  if (!object3D) return null;
-  if (notRemoteHoverTargets.get(object3D)) return null;
-
-  if (object3D.eid !== undefined && hasComponent(APP.world, RemoteHoverTarget, object3D.eid)) {
-    return object3D.el;
-  }
-
-  return findRemoteHoverTarget(object3D.parent);
-}
-AFRAME.registerComponent("is-remote-hover-target", {
-  init: function() {
-    addComponent(APP.world, RemoteHoverTarget, this.el.object3D.eid);
-  },
-  remove: function() {
-    removeComponent(APP.world, RemoteHoverTarget, this.el.object3D.eid);
-  }
-});
-AFRAME.registerComponent("is-not-remote-hover-target", {
-  init: function() {
-    notRemoteHoverTargets.set(this.el.object3D, this.el);
-  },
-  remove: function() {
-    notRemoteHoverTargets.delete(this.el.object3D);
-  }
-});
-
 export function isUI(el) {
   return isTagged(el, "singleActionButton") || isTagged(el, "holdableButton");
 }
 
-function identityFn(o) {
-  return o;
-}
-
 AFRAME.registerSystem("interaction", {
-  updateCursorIntersection: function(intersection, left) {
-    if (!left) {
-      this.rightRemoteHoverTarget = intersection && findRemoteHoverTarget(intersection.object);
-      return this.rightRemoteHoverTarget;
-    }
-
-    this.leftRemoteHoverTarget = intersection && findRemoteHoverTarget(intersection.object);
-    return this.leftRemoteHoverTarget;
-  },
-
   getActiveIntersection() {
     return (
-      (this.state.rightRemote.hovered && this.rightCursorControllerEl.components["cursor-controller"].intersection) ||
-      (this.state.leftRemote.hovered && this.leftCursorControllerEl.components["cursor-controller"].intersection)
+      this.rightCursorControllerEl.components["cursor-controller"].intersection ||
+      this.leftCursorControllerEl.components["cursor-controller"].intersection
     );
-  },
-
-  isHoldingAnything(pred = identityFn) {
-    return !!(
-      pred(this.state.leftHand.held) ||
-      pred(this.state.rightHand.held) ||
-      pred(this.state.rightRemote.held) ||
-      pred(this.state.leftRemote.held)
-    );
-  },
-
-  isHeld(el) {
-    return (
-      this.state.leftHand.held === el ||
-      this.state.rightHand.held === el ||
-      this.state.rightRemote.held === el ||
-      this.state.leftRemote.held === el
-    );
-  },
-
-  wasReleasedThisFrame(el) {
-    return (
-      (this.previousState.leftHand.held === el && !this.state.leftHand.held) ||
-      (this.previousState.rightHand.held === el && !this.state.rightHand.held) ||
-      (this.previousState.rightRemote.held === el && !this.state.rightRemote.held) ||
-      (this.previousState.leftRemote.held === el && !this.state.leftRemote.held)
-    );
-  },
-
-  release(el) {
-    if (this.state.leftHand.held === el) {
-      this.state.leftHand.held = null;
-    }
-    if (this.state.leftHand.hovered === el) {
-      this.state.leftHand.hovered = null;
-    }
-    if (this.state.leftHand.held === el) {
-      this.state.leftHand.held = null;
-    }
-    if (this.state.rightHand.hovered === el) {
-      this.state.rightHand.hovered = null;
-    }
-    if (this.state.rightRemote.held === el) {
-      this.state.rightRemote.held = null;
-    }
-    if (this.state.rightRemote.hovered === el) {
-      this.state.rightRemote.hovered = null;
-    }
-    if (this.state.leftRemote.held === el) {
-      this.state.leftRemote.held = null;
-    }
-    if (this.state.leftRemote.hovered === el) {
-      this.state.leftRemote.hovered = null;
-    }
   },
 
   getRightRemoteHoverTarget() {

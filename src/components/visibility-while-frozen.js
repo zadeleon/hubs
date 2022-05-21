@@ -1,8 +1,11 @@
 import { getLastWorldPosition } from "../utils/three-utils";
 import { waitForDOMContentLoaded } from "../utils/async-utils";
+import { defineQuery } from "bitecs";
+import { Held } from "../bit-components";
 
 const isMobile = AFRAME.utils.device.isMobile();
 
+const heldQuery = defineQuery([Held]);
 /**
  * Toggles the visibility of this entity when the scene is frozen.
  * @namespace ui
@@ -90,7 +93,6 @@ AFRAME.registerComponent("visibility-while-frozen", {
     }
 
     const isTransforming = this.el.sceneEl.systems["transform-selected-object"].transforming;
-    const isHoldingAnything = this.el.sceneEl.systems.interaction.isHoldingAnything();
 
     if (this.data.withPermission && this.data.withoutPermission) {
       throw new Error(
@@ -113,7 +115,7 @@ AFRAME.registerComponent("visibility-while-frozen", {
       ((isFrozen && this.data.visible) || (!isFrozen && !this.data.visible)) &&
       isWithinDistance &&
       !isTransforming &&
-      !isHoldingAnything;
+      !heldQuery(APP.world).length;
 
     if (this.data.requireHoverOnNonMobile && !isMobile) {
       shouldBeVisible =

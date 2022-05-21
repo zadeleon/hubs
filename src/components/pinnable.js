@@ -1,5 +1,6 @@
 import { addComponent, removeComponent } from "bitecs";
 import { Pinnable, Pinned } from "../bit-components";
+import { isHeld } from "../is-held";
 
 AFRAME.registerComponent("pinnable", {
   schema: {
@@ -71,23 +72,23 @@ AFRAME.registerComponent("pinnable", {
         easing: "easeOutElastic"
       });
 
-      if (this.el.components["body-helper"] && !this.el.sceneEl.systems.interaction.isHeld(this.el)) {
+      if (this.el.components["body-helper"] && !isHeld(this.el.eid)) {
         this.el.setAttribute("body-helper", { type: "kinematic" });
       }
     }
   },
 
   tick() {
-    const isHeld = this.el.sceneEl.systems.interaction.isHeld(this.el);
+    const thisIsHeld = isHeld(this.el.eid);
     const isMine = this._isMine();
 
     let didFireThisFrame = false;
-    if (!isHeld && this.wasHeld && isMine) {
+    if (!thisIsHeld && this.wasHeld && isMine) {
       didFireThisFrame = true;
       this._persistAndAnimate();
     }
 
-    this.wasHeld = isHeld;
+    this.wasHeld = thisIsHeld;
 
     this.transformObjectSystem = this.transformObjectSystem || AFRAME.scenes[0].systems["transform-selected-object"];
     const transforming = this.transformObjectSystem.transforming && this.transformObjectSystem.target.el === this.el;

@@ -15,6 +15,7 @@ import emoji3Model from "../assets/models/emojis/emoji_3.glb";
 import emoji4Model from "../assets/models/emojis/emoji_4.glb";
 import emoji5Model from "../assets/models/emojis/emoji_5.glb";
 import emoji6Model from "../assets/models/emojis/emoji_6.glb";
+import { isHeld } from "../is-held";
 
 export const emojis = [
   { id: "smile", model: emoji0Model, particle: emoji0Particle },
@@ -103,9 +104,7 @@ AFRAME.registerComponent("emoji", {
     if (this.particleConfig && isMine) {
       const now = performance.now();
 
-      const isHeld = this.el.sceneEl.systems.interaction.isHeld(this.el);
-
-      if (isHeld) {
+      if (isHeld(this.el.eid)) {
         this.data.emitEndTime = now + this.data.emitDecayTime * 1000;
       }
 

@@ -1,3 +1,5 @@
+import { isHeld } from "../is-held";
+
 /* global AFRAME NAF performance */
 AFRAME.registerComponent("owned-object-limiter", {
   schema: {
@@ -10,11 +12,11 @@ AFRAME.registerComponent("owned-object-limiter", {
 
   tick() {
     this._syncCounterRegistration();
-    const isHeld = this.el.sceneEl.systems.interaction.isHeld(this.el);
-    if (!isHeld && this.wasHeld && this.counter.timestamps.has(this.el)) {
+    const thisIsHeld = isHeld(this.el.eid);
+    if (!thisIsHeld && this.wasHeld && this.counter.timestamps.has(this.el)) {
       this.counter.timestamps.set(this.el, performance.now());
     }
-    this.wasHeld = isHeld;
+    this.wasHeld = thisIsHeld;
   },
 
   remove() {

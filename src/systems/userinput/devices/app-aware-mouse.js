@@ -54,22 +54,27 @@ export class AppAwareMouseDevice {
         rawIntersections
       );
       const intersection = rawIntersections.find(x => x.object.el);
-      const remoteHoverTarget = intersection && findRemoteHoverTarget(intersection.object);
+      // TODO JFS remoteHoverTarget is suss
+      const remoteHoverTarget = intersection && findRemoteHoverTarget(APP.world, intersection.object);
       const userinput = AFRAME.scenes[0].systems.userinput;
+      // TODO JFS
       const isInteractable =
         intersection &&
         intersection.object.el.matches(
           ".interactable, .interactable *, .occupiable-waypoint-icon, .teleport-waypoint-icon"
         );
+      // TODO JFS
       const isPinned =
         remoteHoverTarget && remoteHoverTarget.components.pinnable && remoteHoverTarget.components.pinnable.data.pinned;
       const isFrozen = AFRAME.scenes[0].is("frozen");
+      // TODO JFS
       const template =
         remoteHoverTarget &&
         remoteHoverTarget.components.networked &&
         remoteHoverTarget.components.networked.data.template;
       const isStaticControlledMedia = template && template === "#static-controlled-media";
       const isStaticMedia = template && template === "#static-media";
+      // TODO JFS
       this.clickedOnAnything =
         (isInteractable &&
           (isFrozen || !isPinned) &&
