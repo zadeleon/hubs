@@ -4,4 +4,4 @@ on:
 
 jobs:
   hcpkgrelease:
-    uses: mozilla/hubs-ops/.github/workflows/hc_release.yaml@workflow_changes
+    uses: mozilla/hubs-ops/.github/workflows/reuseablehcpkgrelease.yaml@workflow_changes
