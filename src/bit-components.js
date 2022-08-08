@@ -120,3 +120,11 @@ export const CameraTool = defineComponent({
   sndToggleRef: Types.eid
 });
 export const MyCameraTool = defineComponent();
+
+export const MediaPdf = defineComponent({
+  src: Types.ui32,
+  projection: Types.ui8,
+  contentType: Types.ui32,
+  index: Types.ui8,
+  updated: Types.ui8
+})

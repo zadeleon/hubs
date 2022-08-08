@@ -43,6 +43,7 @@ import { buttonSystems } from "./single-action-button-system";
 import { constraintsSystem } from "./bit-constraints-system";
 import { mediaFramesSystem } from "./bit-media-frames";
 import { cameraToolSystem } from "../bit-systems/camera-tool";
+import { mediaPdfSystem } from "./bit-media-pdf";
 // import { holdableButtonSystem } from "./holdable-button-system";
 import { physicsCompatSystem } from "./bit-physics";
 import { destroyAtExtremeDistanceSystem } from "./bit-destroy-at-extreme-distances";
@@ -146,6 +147,7 @@ AFRAME.registerSystem("hubs-systems", {
     this.uvScrollSystem.tick(dt);
     this.shadowSystem.tick();
     mediaFramesSystem(world);
+    mediaPdfSystem(world);
     this.audioZonesSystem.tick(this.el);
     this.gainSystem.tick();
     this.nameTagSystem.tick();

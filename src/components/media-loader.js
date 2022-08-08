@@ -700,7 +700,7 @@ AFRAME.registerComponent("media-pager", {
   },
 
   onSnap() {
-    this.el.emit("pager-snap-clicked");
+    this.el.emit("pager-snap-clicked", { eid: this.el.eid });
   },
 
   remove() {
