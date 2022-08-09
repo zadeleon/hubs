@@ -120,3 +120,9 @@ export const CameraTool = defineComponent({
   sndToggleRef: Types.eid
 });
 export const MyCameraTool = defineComponent();
+export const Door = defineComponent({
+  isOpen: Types.ui8
+});
+export const NetworkedDoor = defineComponent({
+  isOpen: Types.ui8
+});

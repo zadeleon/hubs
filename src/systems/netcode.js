@@ -1,6 +1,7 @@
 import { addComponent, defineQuery, enterQuery, exitQuery, hasComponent, removeComponent, removeEntity } from "bitecs";
-import { AEntity, Networked, NetworkedMediaFrame, NetworkedTransform, Owned } from "../bit-components";
-import { CameraPrefab, CubeMediaFramePrefab } from "../network-prefabs/camera-tool";
+import { AEntity, Networked, NetworkedMediaFrame, NetworkedTransform, NetworkedDoor, Owned } from "../bit-components";
+import { CameraPrefab, CubeMediaFramePrefab } from "../prefabs/camera-tool";
+import { DoorPrefab } from "../prefabs/door";
 import { defineNetworkSchema } from "../utils/bit-utils";
 import { renderAsEntity } from "../utils/jsx-entity";
 
@@ -12,6 +13,9 @@ const prefabs = new Map(
     },
     cube: {
       template: CubeMediaFramePrefab
+    },
+    door: {
+      template: DoorPrefab
     }
   })
 );
@@ -69,7 +73,8 @@ const ownedNetworkObjectsQuery = defineQuery([Networked, Owned]);
 
 const schemas = new Map([
   [NetworkedMediaFrame, defineNetworkSchema(NetworkedMediaFrame)],
-  [NetworkedTransform, defineNetworkSchema(NetworkedTransform)]
+  [NetworkedTransform, defineNetworkSchema(NetworkedTransform)],
+  [NetworkedDoor, defineNetworkSchema(NetworkedDoor)]
 ]);
 const networkableComponents = Array.from(schemas.keys());
 

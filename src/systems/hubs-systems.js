@@ -43,6 +43,7 @@ import { buttonSystems } from "./single-action-button-system";
 import { constraintsSystem } from "./bit-constraints-system";
 import { mediaFramesSystem } from "./bit-media-frames";
 import { cameraToolSystem } from "../bit-systems/camera-tool";
+import { doorSystem } from "../bit-systems/door-system";
 // import { holdableButtonSystem } from "./holdable-button-system";
 import { physicsCompatSystem } from "./bit-physics";
 import { destroyAtExtremeDistanceSystem } from "./bit-destroy-at-extreme-distances";
@@ -140,6 +141,7 @@ AFRAME.registerSystem("hubs-systems", {
     this.inspectYourselfSystem.tick(this.el, systems.userinput, this.cameraSystem);
     this.cameraSystem.tick(this.el, dt);
     cameraToolSystem(world);
+    doorSystem(world);
     this.waypointSystem.tick(t, dt);
     this.menuAnimationSystem.tick(t);
     this.spriteSystem.tick(t, dt);

@@ -23,6 +23,7 @@ import {
 } from "../bit-components";
 import { inflateMediaFrame } from "../inflators/media-frame";
 import { inflateModel } from "../inflators/model";
+import { inflateDoorModel } from "../inflators/door-model";
 import { inflateSlice9 } from "../inflators/slice9";
 import { inflateText } from "../inflators/text";
 
@@ -144,7 +145,8 @@ const inflators = {
   object3D: addObject3DComponent,
   slice9: inflateSlice9,
   text: inflateText,
-  model: inflateModel
+  model: inflateModel,
+  "door-model": inflateDoorModel
 };
 
 export function renderAsEntity(world, entityDef) {
