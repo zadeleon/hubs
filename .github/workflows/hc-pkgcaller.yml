@@ -5,7 +5,7 @@ on:
     - cron: 30 23 1 1-12 *
 jobs:
   hcpkgrelease:
-    uses: mozilla/hubs-ops/.github/workflows/reuseablehcpkgrelease.yaml@workflow_changes
+    uses: mozilla/hubs-ops/.github/workflows/HcPkgPreReleaseGitops.yaml@workflow_changes
     with:
       main: bpt-clonemaster
       releasing: bpt-clonehc
