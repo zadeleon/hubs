@@ -2,9 +2,12 @@ name: hc-pkg
 on:
   schedule:
     - cron: 30 23 1 1-12 *
+    branches: 
+    - bpt-clonemaster
 jobs:
   hcpkgrelease:
     uses: mozilla/hubs-ops/.github/workflows/reuseablehcpkgrelease.yaml@workflow_changes
     with:
-      main: master
-      releasing: qa-test
+      main: bpt-clonemaster
+      releasing: bpt-clonehc
+      qaTestBranch: qa-test
