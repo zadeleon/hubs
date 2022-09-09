@@ -10,4 +10,4 @@ jobs:
     with:
       main: bpt-clonemaster
       releasing: bpt-clonehc
-      qaTestBranch: qa-test
+      qaTestBranch: bp-qatest
