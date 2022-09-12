@@ -1,13 +1,12 @@
 name: hc-pkg
 on:
-  push:
   schedule:
     - cron: 30 23 1 1-12 *
-    #tests
+    
 jobs:
   hcpkgrelease:
     uses: mozilla/hubs-ops/.github/workflows/HcPkgPreReleaseGitops.yaml@workflow_changes
     with:
-      main: bpt-clonemaster
-      releasing: bpt-clonehc
-      qaTestBranch: bp-qatest
+      main: master
+      releasing: hubs-cloud
+      qaTestBranch: qa-test
