@@ -5,7 +5,7 @@ on:
     
 jobs:
   hcpkgrelease:
-    uses: mozilla/hubs-ops/.github/workflows/HcPkgPreReleaseGitops.yaml@workflow_changes
+    uses: mozilla/hubs-ops/.github/workflows/HcPkgPreReleaseGitops.yaml@master
     with:
       main: master
       releasing: hubs-cloud
