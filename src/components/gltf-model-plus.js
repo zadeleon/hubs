@@ -11,6 +11,7 @@ import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { BasisTextureLoader } from "three/examples/jsm/loaders/BasisTextureLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import GLTFLodExtension from "three-gltf-extensions/loaders/MSFT_lod/MSFT_lod";
 
 THREE.Mesh.prototype.raycast = acceleratedRaycast;
 
@@ -376,6 +377,12 @@ function runMigration(version, json) {
   }
 }
 
+const convertStandardMaterialsIfNeeded = (object) => {
+  const materialQuality = window.APP.store.state.preferences.materialQualitySetting;
+  updateMaterials(object, material => convertStandardMaterial(material, materialQuality));
+  return object;
+};
+
 let ktxLoader;
 let dracoLoader;
 
@@ -441,8 +448,7 @@ class GLTFHubsPlugin {
       // GLTFLoader sets matrixAutoUpdate on animated objects, we want to keep the defaults
       // @TODO: Should this be fixed in the gltf loader?
       object.matrixAutoUpdate = THREE.Object3D.DefaultMatrixAutoUpdate;
-      const materialQuality = window.APP.store.state.preferences.materialQualitySetting;
-      updateMaterials(object, material => convertStandardMaterial(material, materialQuality));
+      convertStandardMaterialsIfNeeded(object);
     });
 
     // Replace animation target node name with the node uuid.
@@ -656,7 +662,59 @@ export async function loadGLTF(src, contentType, onProgress, jsonPreprocessor) {
     .register(parser => new GLTFHubsPlugin(parser, jsonPreprocessor))
     .register(parser => new GLTFHubsLightMapExtension(parser))
     .register(parser => new GLTFHubsTextureBasisExtension(parser))
-    .register(parser => new GLTFMozTextureRGBE(parser, new RGBELoader().setDataType(THREE.HalfFloatType)));
+    .register(parser => new GLTFMozTextureRGBE(parser, new RGBELoader().setDataType(THREE.HalfFloatType)))
+    .register(parser => new GLTFLodExtension(parser, {
+      loadingMode: 'progressive',
+      calculateDistance: (level) => {
+        // @TODO: Fix me. Calculate distance more appropriately.
+        return level;
+      },
+      onLoadMesh: (lod, mesh, level, lowestLevel) => {
+        // Higher levels are progressively loaded on demand.
+        // So some post-loading processings done in gltf-model-plus and media-loader
+        // need to be done here now.
+
+        // Nothing to do if this is the lowest level mesh.
+        if (level === lowestLevel || lod.levels.length === 0) {
+          return mesh;
+        }
+
+        let lowestMeshLevel = null;
+        for (let index = lowestLevel; index > level; index--) {
+          if (lod.levels[index].object.type !== 'Object3D') {
+            lowestMeshLevel = index;
+            break;
+          }
+        }
+
+        if (lowestMeshLevel === null) {
+          return mesh;
+        }
+
+        // Create a mesh clone. Otherwise if an lod instance is cloned before higher
+        // levels are loaded the lods instance can refer to the same mesh instance,
+        // therefore the lods can be broken because an object can't be placed
+        // at multiple places in a Three.js scene tree.
+        mesh = mesh.clone();
+
+        convertStandardMaterialsIfNeeded(mesh);
+
+        // A hacky solution. media-loader and media-utils make a material clone
+        // and inject shader code chunk for hover effects on before compile hook
+        // as a post-loading process. Here simulates them.
+        // @TODO: Check if this always works. Replace with a better and simpler solution.
+        const currentOnBeforeRender = mesh.material.onBeforeRender;
+        mesh.material = mesh.material.clone();
+        mesh.material.currentOnBeforeRender = currentOnBeforeRender;
+
+        // onBeforeCompile of the material of the lowest level mesh should be
+        // already set up because the lowest level should be loaded first.
+        mesh.material.onBeforeCompile =
+          lod.levels[lowestMeshLevel].object.material.onBeforeCompile;
+
+        return mesh;
+      }
+    }));
 
   // TODO some models are loaded before the renderer exists. This is likely things like the camera tool and loading cube.
   // They don't currently use KTX textures but if they did this would be an issue. Fixing this is hard but is part of
